@@ -1,0 +1,13 @@
+<Project>
+    <PropertyGroup>
+        <Version>0.1.0</Version>
+        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <Authors>Token</Authors>
+        <Company>Token</Company>
+        <PackageId>$(AssemblyName)</PackageId>
+        <Copyright>© Token Corporation. All rights reserved.</Copyright>
+        <RepositoryUrl>https://github.com/239573049/FastMiniApis</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    </PropertyGroup>
+</Project>
