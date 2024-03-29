@@ -1,6 +1,4 @@
 ﻿using System.ComponentModel;
-using FastMiniApis.Core;
-using FastMiniApis.Core.Attributes;
 
 namespace FastMiniApis.Test;
 

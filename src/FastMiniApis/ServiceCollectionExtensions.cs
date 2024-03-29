@@ -1,11 +1,13 @@
 ﻿using System.Reflection;
+using FastMiniApis.Core;
 using Microsoft.Extensions.Options;
 
-namespace FastMiniApis.Core;
+namespace FastMiniApis;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddService(this IServiceCollection services, params Assembly[] assemblies)
+    public static IServiceCollection AddService(this IServiceCollection services,
+        ServiceType serviceType = ServiceType.Transient, params Assembly[] assemblies)
     {
         if (assemblies.Length == 0)
             assemblies = AppDomain.CurrentDomain.GetAssemblies();
@@ -16,15 +18,24 @@ public static class ServiceCollectionExtensions
 
         foreach (var type in types)
         {
-            services.AddSingleton(typeof(IServiceApi),type);
+            switch (serviceType)
+            {
+                case ServiceType.Singleton:
+                    services.AddSingleton(typeof(IServiceApi), type);
+                    break;
+                case ServiceType.Scoped:
+                    services.AddScoped(typeof(IServiceApi), type);
+                    break;
+                case ServiceType.Transient:
+                    services.AddTransient(typeof(IServiceApi), type);
+                    break;
+            }
         }
 
-        
-        
         return services;
     }
 
-    public static void MapMasaMinimalAPIs(this WebApplication webApplication)
+    public static void MapFastMiniApis(this WebApplication webApplication)
     {
         FastApp.Build(webApplication);
 

@@ -1,4 +1,6 @@
-﻿namespace FastMiniApis.Core;
+﻿using FastMiniApis.Core;
+
+namespace FastMiniApis;
 
 
 [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]

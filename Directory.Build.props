@@ -1,7 +1,7 @@
 <Project>
     <PropertyGroup>
-        <Version>0.1.0</Version>
-        <AssemblyVersion>0.1.0</AssemblyVersion>
+        <Version>0.1.1</Version>
+        <AssemblyVersion>0.1.1</AssemblyVersion>
         <Authors>Token</Authors>
         <Company>Token</Company>
         <PackageId>$(AssemblyName)</PackageId>
@@ -9,5 +9,6 @@
         <RepositoryUrl>https://github.com/239573049/FastMiniApis</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <OpenAPIVersion>8.0.3</OpenAPIVersion>
     </PropertyGroup>
 </Project>
