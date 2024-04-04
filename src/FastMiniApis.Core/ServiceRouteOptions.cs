@@ -38,7 +38,10 @@ public class ServiceRouteOptions
     /// Use the request type when matching the request method based on the prefix fails
     /// When the collection is empty, the default Post, Get, Put, Delete all support access
     /// </summary>
-    public string[] MapHttpMethodsForUnmatched { get; set; } = Array.Empty<string>();
+    public string[] MapHttpMethodsForUnmatched { get; set; } =
+    {
+        "POST"
+    };
 
     /// <summary>
     /// Enable access to public properties

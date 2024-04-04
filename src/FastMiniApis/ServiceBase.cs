@@ -167,6 +167,12 @@ public abstract class ServiceBase : IServiceApi
                 .Description(description)
                 .WithOpenApi();
 
+        if (string.IsNullOrEmpty(description))
+        {
+            return App.Map(pattern, handler)
+                .WithOpenApi();
+        }
+        
         return App.Map(pattern, handler)
             .Description(description)
             .WithOpenApi();
@@ -179,7 +185,7 @@ public abstract class ServiceBase : IServiceApi
 
         if (globalOptions.MapHttpMethodsForUnmatched.Length > 0)
             return globalOptions.MapHttpMethodsForUnmatched;
-
+        
         return Array.Empty<string>();
     }
 
