@@ -16,6 +16,7 @@ public static class ServiceCollectionExtensions
         var types = assemblies.SelectMany(assembly => assembly.GetTypes())
             .Where(type => type is { IsClass: true, IsAbstract: false } && type.IsSubclassOf(typeof(ServiceBase)));
 
+        GetMethodsByAutoMapRoute(types, services);
         foreach (var type in types)
         {
             switch (serviceType)
@@ -33,6 +34,39 @@ public static class ServiceCollectionExtensions
         }
 
         return services;
+    }
+
+    /// <summary>
+    /// 扫描类和类的所有方法中的特性
+    /// </summary>
+    private static void GetMethodsByAutoMapRoute(IEnumerable<Type> types, IServiceCollection services)
+    {
+        var values = new List<Type>();
+        foreach (var type in types)
+        {
+            // 搜索type的特性和里面的所有public的方法中的特性
+            var methods = type.GetMethods(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+            var filter = methods.Where(x => x.GetCustomAttribute<FilterAttribute>() != null).SelectMany(x =>
+            {
+                var type = x.GetCustomAttribute<FilterAttribute>();
+
+                return type!.FilterTypes;
+            }).ToList();
+
+            var filterTypes = type.GetCustomAttribute<FilterAttribute>()?.FilterTypes;
+            if (filterTypes != null)
+                filter.AddRange(filterTypes);
+
+            values.AddRange(filter);
+        }
+
+        values = values.Distinct().ToList();
+
+        foreach (var f in values)
+        {
+            services.AddSingleton(f);
+        }
     }
 
     public static void MapFastMiniApis(this WebApplication webApplication)

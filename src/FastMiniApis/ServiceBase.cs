@@ -9,10 +9,6 @@ namespace FastMiniApis;
 
 public abstract class ServiceBase : IServiceApi
 {
-    private WebApplication? _webApplication;
-
-    public WebApplication App => _webApplication ?? FastApp.WebApplication;
-
     public string BaseUri { get; init; }
 
     public ServiceRouteOptions RouteOptions { get; } = new();
@@ -82,7 +78,7 @@ public abstract class ServiceBase : IServiceApi
                 methodName ?? GetMethodName(method, prefix, globalOptions));
             var routeHandlerBuilder = MapMethods(globalOptions, pattern, httpMethod, handler, description);
 
-            var methodFilter = type.GetCustomAttribute<FilterAttribute>();
+            var methodFilter = method.GetCustomAttribute<FilterAttribute>();
 
             if (authorize != null)
             {
@@ -108,9 +104,10 @@ public abstract class ServiceBase : IServiceApi
     {
         foreach (var filterType in filter.FilterTypes)
         {
-            if (Activator.CreateInstance(filterType) is IEndpointFilter filterInstance)
+            var filterInstance = FastApp.WebApplication.Services.GetService(filterType);
+            if (filterInstance is IEndpointFilter endpointFilter)
             {
-                routeHandlerBuilder.AddEndpointFilter(filterInstance);
+                routeHandlerBuilder.AddEndpointFilter(endpointFilter);
             }
         }
     }
@@ -154,7 +151,7 @@ public abstract class ServiceBase : IServiceApi
         Delegate handler, string? description)
     {
         if (!string.IsNullOrWhiteSpace(httpMethod))
-            return App.MapMethods(pattern, new[]
+            return FastApp.WebApplication.MapMethods(pattern, new[]
                 {
                     httpMethod
                 }, handler)
@@ -163,17 +160,17 @@ public abstract class ServiceBase : IServiceApi
 
         var httpMethods = GetDefaultHttpMethods(globalOptions);
         if (httpMethods.Length > 0)
-            return App.MapMethods(pattern, httpMethods, handler)
+            return FastApp.WebApplication.MapMethods(pattern, httpMethods, handler)
                 .Description(description)
                 .WithOpenApi();
 
         if (string.IsNullOrEmpty(description))
         {
-            return App.Map(pattern, handler)
+            return FastApp.WebApplication.Map(pattern, handler)
                 .WithOpenApi();
         }
-        
-        return App.Map(pattern, handler)
+
+        return FastApp.WebApplication.Map(pattern, handler)
             .Description(description)
             .WithOpenApi();
     }
@@ -185,7 +182,7 @@ public abstract class ServiceBase : IServiceApi
 
         if (globalOptions.MapHttpMethodsForUnmatched.Length > 0)
             return globalOptions.MapHttpMethodsForUnmatched;
-        
+
         return Array.Empty<string>();
     }
 
@@ -258,4 +255,5 @@ public abstract class ServiceBase : IServiceApi
 
         return (null, string.Empty);
     }
+
 }

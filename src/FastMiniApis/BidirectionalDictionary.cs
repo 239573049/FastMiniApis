@@ -1,23 +1,17 @@
-﻿namespace FastMiniApis.Core;
+﻿namespace FastMiniApis;
 
 
 /// <summary>
-/// This class provide service for both the singularization and pluralization, it takes the word pairs
-/// in the ctor following the rules that the first one is singular and the second one is plural.
+/// 这个类同时提供单数和复数的服务，它接受单词对
+/// 按照第一个词是单数，第二个词是复数的规则。
 /// </summary>
 [System.Diagnostics.CodeAnalysis.ExcludeFromCodeCoverage]
-public class BidirectionalDictionary<TFirst, TSecond>
+public class BidirectionalDictionary<TFirst, TSecond>()
     where TFirst : notnull
     where TSecond : notnull
 {
-    public Dictionary<TFirst, TSecond> FirstToSecondDictionary { get; set; }
-    public Dictionary<TSecond, TFirst> SecondToFirstDictionary { get; set; }
-
-    public BidirectionalDictionary()
-    {
-        FirstToSecondDictionary = new Dictionary<TFirst, TSecond>();
-        SecondToFirstDictionary = new Dictionary<TSecond, TFirst>();
-    }
+    public Dictionary<TFirst, TSecond> FirstToSecondDictionary { get; set; } = new();
+    public Dictionary<TSecond, TFirst> SecondToFirstDictionary { get; set; } = new();
 
     public BidirectionalDictionary(Dictionary<TFirst, TSecond> firstToSecondDictionary) : this()
     {
@@ -57,9 +51,6 @@ public class BidirectionalDictionary<TFirst, TSecond>
     {
         FirstToSecondDictionary.Add(firstValue, secondValue);
 
-        if (!SecondToFirstDictionary.ContainsKey(secondValue))
-        {
-            SecondToFirstDictionary.Add(secondValue, firstValue);
-        }
+        SecondToFirstDictionary.TryAdd(secondValue, firstValue);
     }
 }
